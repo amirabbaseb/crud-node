@@ -1,10 +1,20 @@
 const users = require("../../models").users;
 const { userValidator } = require("../../validator/user");
+const { Op } = require("sequelize");
 
 exports.getUsers = async function (req, res) {
+  const { limit, page, name } = req.body;
+
   try {
-    const user = await users.findAll();
-    res.send(user);
+    if (!name) {
+      res.status(400).send("Please pass name in your body request");
+    } else {
+      const user = await users.findAndCountAll({
+        limit: limit,
+        where: { name: { [Op.like]: `%${name}%` } },
+      });
+      res.send(user);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }
@@ -27,23 +37,17 @@ exports.createUser = async function (req, res) {
       permission_id,
     } = req.body;
 
-    if (
-      !{
-        name,
-        family,
-        email,
-        phone,
-        password,
-        address,
-        username,
-        image,
-        permission_id,
-      }
-    ) {
-      res.status(400).send("All input is required");
-    }
-
-    const user = await users.create({ ...req.body });
+    const user = await users.create({
+      name,
+      family,
+      email,
+      phone,
+      address,
+      username,
+      password,
+      image,
+      permission_id,
+    });
     res.status(201).json(user);
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
@@ -52,9 +56,10 @@ exports.createUser = async function (req, res) {
 
 exports.getUserById = async function (req, res) {
   const id = req.params.id;
+
   try {
     if (!id) res.status(400).send("ID is required!");
-    const user = await users.findOne({ where: { id: String(id) } });
+    const user = await users.findByPk(id);
     res.status(200).json(user);
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
@@ -64,12 +69,21 @@ exports.getUserById = async function (req, res) {
 exports.deleteUser = async function (req, res) {
   const id = req.params.id;
   try {
-    const user = await users.destroy({
-      where: {
-        id: String(id),
-      },
-    });
-    res.status(201).send(`user with ${id} deleted successfully!`);
+    const oldUser = await users.findOne({ where: { id: id } });
+
+    if (oldUser) {
+      const user = await users.destroy({
+        where: {
+          id: id,
+        },
+      });
+      res.status(200).send(`user with ${id} deleted successfully!`);
+      console.log("ID", oldUser);
+    } else {
+      res
+        .status(400)
+        .send(`user with ${id} didnt find! please send available ID`);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }

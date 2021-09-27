@@ -1,10 +1,20 @@
 const permissions = require("../../models").permissions;
 const { permissionValidator } = require("../../validator/permission");
+const { Op } = require("sequelize");
 
 exports.getPermissions = async function (req, res) {
+  const { limit, page, name } = req.body;
+
   try {
-    const permission = await permissions.findAll();
-    res.send(permission);
+    if (!name) {
+      res.status(400).send("Please pass name in your body request");
+    } else {
+      const permission = await permissions.findAndCountAll({
+        limit: limit,
+        where: { name: { [Op.like]: `%${name}%` } },
+      });
+      res.send(permission);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }
@@ -17,10 +27,6 @@ exports.createPermission = async function (req, res) {
 
     const { name, image } = req.body;
 
-    if (!{ name, image }) {
-      res.status(400).send("All input is required");
-    }
-
     const permission = await permissions.create({ name, image });
     res.status(201).json(permission);
   } catch (error) {
@@ -32,7 +38,7 @@ exports.getPermissionById = async function (req, res) {
   const id = req.params.id;
   try {
     if (!id) res.status(400).send("ID is required!");
-    const permission = await permissions.findOne({ where: { id: String(id) } });
+    const permission = await permissions.findOne({ where: { id: id } });
     res.status(200).json(permission);
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
@@ -42,12 +48,23 @@ exports.getPermissionById = async function (req, res) {
 exports.deletePermission = async function (req, res) {
   const id = req.params.id;
   try {
-    const permission = await permissions.destroy({
-      where: {
-        id: String(id),
-      },
+    const oldPermission = await permissions.findOne({
+      where: { id: id },
     });
-    res.status(201).send(`permission with ${id} deleted successfully!`);
+
+    if (oldPermission) {
+      const permission = await permissions.destroy({
+        where: {
+          id: id,
+        },
+      });
+      res.status(200).send(`permission with ${id} deleted successfully!`);
+      console.log("ID", oldPermission);
+    } else {
+      res
+        .status(400)
+        .send(`permission with ${id} didnt find! please send available ID`);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }

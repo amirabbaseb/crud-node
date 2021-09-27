@@ -6,10 +6,11 @@ exports.userValidator = (user) => {
     family: Joi.string().required(),
     email: Joi.string().required().email(),
     phone: Joi.string().min(10).required(),
-    username: Joi.number().required(),
+    address: Joi.string(),
+    username: Joi.string(),
     password: Joi.string().required(),
-    image: Joi.number(),
-    permission: Joi.string(),
+    image: Joi.string(),
+    permission_id: Joi.number(),
   };
 
   return Joi.validate(user, schema);

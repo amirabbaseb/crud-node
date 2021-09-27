@@ -1,10 +1,20 @@
 const brands = require("../../models").brands;
 const { brandValidator } = require("../../validator/brand");
+const { Op } = require("sequelize");
 
 exports.getBrands = async function (req, res) {
+  const { limit, page, name } = req.body;
+
   try {
-    const brand = await brands.findAll();
-    res.send(brand);
+    if (!name) {
+      res.status(400).send("Please pass name in your body request");
+    } else {
+      const brand = await brands.findAndCountAll({
+        limit: limit,
+        where: { name: { [Op.like]: `%${name}%` } },
+      });
+      res.send(brand);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }
@@ -17,10 +27,6 @@ exports.createBrands = async function (req, res) {
 
     const { name, image } = req.body;
 
-    if (!{ name, image }) {
-      res.status(400).send("All input is required");
-    }
-
     const brand = await brands.create({ name, image });
     res.status(201).json(brand);
   } catch (error) {
@@ -32,7 +38,7 @@ exports.getBrandsById = async function (req, res) {
   const id = req.params.id;
   try {
     if (!id) res.status(400).send("ID is required!");
-    const brand = await brands.findOne({ where: { id: String(id) } });
+    const brand = await brands.findOne({ where: { id: id } });
     res.status(200).json(brand);
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
@@ -42,12 +48,21 @@ exports.getBrandsById = async function (req, res) {
 exports.deleteBrands = async function (req, res) {
   const id = req.params.id;
   try {
-    const brand = await brands.destroy({
-      where: {
-        id: String(id),
-      },
-    });
-    res.status(201).send(`brand with ${id} deleted successfully!`);
+    const oldBrand = await brands.findOne({ where: { id: id } });
+
+    if (oldBrand) {
+      const brand = await brands.destroy({
+        where: {
+          id: String(id),
+        },
+      });
+      res.status(200).send(`brand with ${id} deleted successfully!`);
+      console.log("ID", oldBrand);
+    } else {
+      res
+        .status(400)
+        .send(`brand with ${id} didnt find! please send available ID`);
+    }
   } catch (error) {
     res.status(400).send(`Something went Wrong: ${error}`);
   }

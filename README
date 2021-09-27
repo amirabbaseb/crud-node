@@ -1,0 +1,18 @@
+TODO => DONE
+    1: logical seeders(current version some of data's are null or didnt insert)
+    2: status code
+    3: validate 
+    4: paginate API
+    5: search API
+NOTICE
+    1: clean code
+    2: add README and explain your project structure
+
+PROJECT STRUCTURE
+    this is CRUD application with 5 controller & API's for it.
+    Brands API: iCUD(index&pagination, create, update, delete)
+    Color API: iCUD(index&pagination, create, update, delete)
+    Item API: iCUD(index&pagination, create, update, delete)
+    Permission API: iCUD(index&pagination, create, update, delete)
+    User API: iCUD(index&pagination, create, update, delete)
+        API's Starts with api/v1/{api category}
