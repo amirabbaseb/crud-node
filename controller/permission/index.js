@@ -7,11 +7,13 @@ exports.getPermissions = async function (req, res) {
 
   try {
     if (!name) {
-      res.status(400).send("Please pass name in your body request");
+      const permission = await permissions.findAll();
+      res.status(200).send(permission);
     } else {
       const permission = await permissions.findAndCountAll({
-        limit: limit,
+        limit: limit ? limit : 5,
         where: { name: { [Op.like]: `%${name}%` } },
+        offset: page ? page : 0,
       });
       res.send(permission);
     }

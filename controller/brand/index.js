@@ -7,11 +7,13 @@ exports.getBrands = async function (req, res) {
 
   try {
     if (!name) {
-      res.status(400).send("Please pass name in your body request");
+      const brand = await brands.findAll();
+      res.status(200).send(brand);
     } else {
       const brand = await brands.findAndCountAll({
-        limit: limit,
+        limit: limit ? limit : 5,
         where: { name: { [Op.like]: `%${name}%` } },
+        offset: page ? page : 0,
       });
       res.send(brand);
     }

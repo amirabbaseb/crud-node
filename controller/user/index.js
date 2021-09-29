@@ -7,11 +7,13 @@ exports.getUsers = async function (req, res) {
 
   try {
     if (!name) {
-      res.status(400).send("Please pass name in your body request");
+      const user = await users.findAll();
+      res.status(200).send(user);
     } else {
       const user = await users.findAndCountAll({
-        limit: limit,
+        limit: limit ? limit : 5,
         where: { name: { [Op.like]: `%${name}%` } },
+        offset: page ? page : 0,
       });
       res.send(user);
     }
