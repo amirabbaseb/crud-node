@@ -18,7 +18,7 @@ exports.getUsers = async function (req, res) {
       res.send(user);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -52,7 +52,7 @@ exports.createUser = async function (req, res) {
     });
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -64,7 +64,7 @@ exports.getUserById = async function (req, res) {
     const user = await users.findByPk(id);
     res.status(200).json(user);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -79,7 +79,7 @@ exports.deleteUser = async function (req, res) {
           id: id,
         },
       });
-      res.status(200).send(`user with ${id} deleted successfully!`);
+      res.status(202).send(`user with ${id} deleted successfully!`);
       console.log("ID", oldUser);
     } else {
       res
@@ -87,7 +87,7 @@ exports.deleteUser = async function (req, res) {
         .send(`user with ${id} didnt find! please send available ID`);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -106,8 +106,8 @@ exports.updateUser = async function (req, res) {
       },
       { returning: true, where: { id: id } }
     );
-    res.status(201).send(`user with ${id} updated successfully!`);
+    res.status(200).send(`user with ${id} updated successfully!`);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };

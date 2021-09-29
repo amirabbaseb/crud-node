@@ -18,7 +18,7 @@ exports.getItems = async function (req, res) {
       res.send(item);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -32,7 +32,7 @@ exports.createItem = async function (req, res) {
     const item = await items.create({ name, image });
     res.status(201).json(item);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -43,7 +43,7 @@ exports.getItemById = async function (req, res) {
     const item = await items.findOne({ where: { id: id } });
     res.status(200).json(item);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -58,7 +58,7 @@ exports.deleteItem = async function (req, res) {
           id: String(id),
         },
       });
-      res.status(200).send(`item with ${id} deleted successfully!`);
+      res.status(202).send(`item with ${id} deleted successfully!`);
       console.log("ID", oldItem);
     } else {
       res
@@ -66,7 +66,7 @@ exports.deleteItem = async function (req, res) {
         .send(`item with ${id} didnt find! please send available ID`);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -84,8 +84,8 @@ exports.updateItem = async function (req, res) {
       },
       { returning: true, where: { id: id } }
     );
-    res.status(201).send(`item with ${id} updated successfully!`);
+    res.status(200).send(`item with ${id} updated successfully!`);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };

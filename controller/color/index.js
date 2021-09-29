@@ -18,7 +18,7 @@ exports.getColors = async function (req, res) {
       res.send(color);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -35,7 +35,7 @@ exports.createColor = async function (req, res) {
     });
     res.status(201).json(color);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -46,7 +46,7 @@ exports.getColorById = async function (req, res) {
     const color = await colors.findOne({ where: { id: id } });
     res.status(200).json(color);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -61,7 +61,7 @@ exports.deleteColor = async function (req, res) {
           id: id,
         },
       });
-      res.status(200).send(`color with ${id} deleted successfully!`);
+      res.status(202).send(`color with ${id} deleted successfully!`);
       console.log("ID", oldColor);
     } else {
       res
@@ -69,7 +69,7 @@ exports.deleteColor = async function (req, res) {
         .send(`color with ${id} didnt find! please send available ID`);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -85,8 +85,8 @@ exports.updateColor = async function (req, res) {
       },
       { returning: true, where: { id: id } }
     );
-    res.status(201).send(`color with ${id} updated successfully!`);
+    res.status(200).send(`color with ${id} updated successfully!`);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };

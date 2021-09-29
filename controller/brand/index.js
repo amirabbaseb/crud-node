@@ -18,7 +18,7 @@ exports.getBrands = async function (req, res) {
       res.send(brand);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -32,7 +32,7 @@ exports.createBrands = async function (req, res) {
     const brand = await brands.create({ name, image });
     res.status(201).json(brand);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -43,7 +43,7 @@ exports.getBrandsById = async function (req, res) {
     const brand = await brands.findOne({ where: { id: id } });
     res.status(200).json(brand);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -58,7 +58,7 @@ exports.deleteBrands = async function (req, res) {
           id: String(id),
         },
       });
-      res.status(200).send(`brand with ${id} deleted successfully!`);
+      res.status(202).send(`brand with ${id} deleted successfully!`);
       console.log("ID", oldBrand);
     } else {
       res
@@ -66,7 +66,7 @@ exports.deleteBrands = async function (req, res) {
         .send(`brand with ${id} didnt find! please send available ID`);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -81,8 +81,8 @@ exports.updateBrands = async function (req, res) {
       },
       { returning: true, where: { id: id } }
     );
-    res.status(201).send(`brand with ${id} updated successfully!`);
+    res.status(200).send(`brand with ${id} updated successfully!`);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };

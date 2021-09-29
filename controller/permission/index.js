@@ -18,7 +18,7 @@ exports.getPermissions = async function (req, res) {
       res.send(permission);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -32,7 +32,7 @@ exports.createPermission = async function (req, res) {
     const permission = await permissions.create({ name, image });
     res.status(201).json(permission);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -43,7 +43,7 @@ exports.getPermissionById = async function (req, res) {
     const permission = await permissions.findOne({ where: { id: id } });
     res.status(200).json(permission);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -60,7 +60,7 @@ exports.deletePermission = async function (req, res) {
           id: id,
         },
       });
-      res.status(200).send(`permission with ${id} deleted successfully!`);
+      res.status(202).send(`permission with ${id} deleted successfully!`);
       console.log("ID", oldPermission);
     } else {
       res
@@ -68,7 +68,7 @@ exports.deletePermission = async function (req, res) {
         .send(`permission with ${id} didnt find! please send available ID`);
     }
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
 
@@ -83,8 +83,8 @@ exports.updatePermission = async function (req, res) {
       },
       { returning: true, where: { id: id } }
     );
-    res.status(201).send(`permission with ${id} updated successfully!`);
+    res.status(200).send(`permission with ${id} updated successfully!`);
   } catch (error) {
-    res.status(400).send(`Something went Wrong: ${error}`);
+    res.status(500).send(`Something went Wrong: ${error}`);
   }
 };
